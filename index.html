@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
@@ -45,34 +6,43 @@
   <title>Videohylla</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
   <div id="root"></div>
+  <div id="error" class="hidden text-red-500 text-center p-4">
+    Det gick inte att ladda appen. Kontrollera konsolen för fel.
+  </div>
   <script type="text/babel">
     const images = [
-      'https://images.unsplash.com/photo-1515041219749-89347f83291a?w=300',
-      'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=300',
-      'https://images.unsplash.com/photo-1519985176271-4f1d9e4d4b4a?w=300',
-      'https://images.unsplash.com/photo-1521747116042-5a7b47b1e8a4?w=300',
-      'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300',
-      'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=300',
-      'https://images.unsplash.com/photo-1518977824350-3e0f4b1c2b2a?w=300',
-      'https://images.unsplash.com/photo-1516321310762-9c5f5f5f5f5f?w=300',
-      'https://images.unsplash.com/photo-1515934751633-3e8f4b6a36b4?w=300'
+      'https://image.tmdb.org/t/p/w342/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg', // Spider-Man: No Way Home
+      'https://image.tmdb.org/t/p/w342/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg', // Dune (2021)
+      'https://image.tmdb.org/t/p/w342/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg', // Pulp Fiction
+      'https://image.tmdb.org/t/p/w342/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg', // Star Wars: Episode IV
+      'https://image.tmdb.org/t/p/w342/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', // The Avengers
+      'https://image.tmdb.org/t/p/w342/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg', // Avengers: Endgame
+      'https://image.tmdb.org/t/p/w342/3bhkrj58Vtu7enYsRolD1fZdja1.jpg', // Titanic
+      'https://image.tmdb.org/t/p/w342/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg', // Jaws
+      'https://image.tmdb.org/t/p/w342/ekZobS8isE6mA53RAiGDG93hBxL.jpg'  // Mad Max: Fury Road (ersätter 9)
     ];
+
+    const fallbackImage = 'https://via.placeholder.com/200x300?text=Poster+Missing';
 
     function VideoShelf() {
       return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
           <div className="grid grid-cols-3 gap-4 max-w-md w-full">
             {images.map((src, index) => (
-              <div key={index} className="aspect-w-1 aspect-h-1">
+              <div key={index} className="aspect-w-2 aspect-h-3">
                 <img
                   src={src}
-                  alt={`Bild ${index + 1}`}
+                  alt={`Poster ${index + 1}`}
                   className="w-full h-full object-cover rounded-lg shadow-md"
+                  onError={(e) => {
+                    console.log(`Fel vid laddning av bild ${index + 1}: ${src}`);
+                    e.target.src = fallbackImage;
+                  }}
                 />
               </div>
             ))}
@@ -81,8 +51,13 @@
       );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<VideoShelf />);
+    try {
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<VideoShelf />);
+    } catch (e) {
+      console.error('Fel vid rendering:', e);
+      document.getElementById('error').classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
