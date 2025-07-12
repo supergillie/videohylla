@@ -15,24 +15,22 @@
     Det gick inte att ladda appen. Kontrollera konsolen för fel.
   </div>
   <script type="text/babel">
+    console.log('Börjar rendera Videohylla...');
+
     const images = [
       'https://image.tmdb.org/t/p/w342/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg', // Spider-Man: No Way Home
-      'https://image.tmdb.org/t/p/w342/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg', // Dune (2021)
       'https://image.tmdb.org/t/p/w342/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg', // Pulp Fiction
       'https://image.tmdb.org/t/p/w342/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg', // Star Wars: Episode IV
-      'https://image.tmdb.org/t/p/w342/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', // The Avengers
-      'https://image.tmdb.org/t/p/w342/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg', // Avengers: Endgame
-      'https://image.tmdb.org/t/p/w342/3bhkrj58Vtu7enYsRolD1fZdja1.jpg', // Titanic
-      'https://image.tmdb.org/t/p/w342/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg', // Jaws
-      'https://image.tmdb.org/t/p/w342/ekZobS8isE6mA53RAiGDG93hBxL.jpg'  // Mad Max: Fury Road
+      'https://image.tmdb.org/t/p/w342/3bhkrj58Vtu7enYsRolD1fZdja1.jpg'  // Titanic
     ];
 
     const fallbackImage = 'https://via.placeholder.com/200x300?text=Poster+Missing';
 
     function VideoShelf() {
+      console.log('Rendering VideoShelf-komponent...');
       return (
         <div className="bg-gray-100 flex items-start justify-center p-4">
-          <div className="grid grid-cols-3 gap-4 max-w-md w-full">
+          <div className="grid grid-cols-2 gap-4 max-w-md w-full">
             {images.map((src, index) => (
               <div key={index} className="aspect-w-2 aspect-h-3">
                 <img
@@ -43,6 +41,7 @@
                     console.log(`Fel vid laddning av bild ${index + 1}: ${src}`);
                     e.target.src = fallbackImage;
                   }}
+                  onLoad={() => console.log(`Bild ${index + 1} laddades: ${src}`)}
                 />
               </div>
             ))}
@@ -52,7 +51,9 @@
     }
 
     try {
+      console.log('Försöker skapa React-root...');
       const root = ReactDOM.createRoot(document.getElementById('root'));
+      console.log('Renderar VideoShelf...');
       root.render(<VideoShelf />);
     } catch (e) {
       console.error('Fel vid rendering:', e);
