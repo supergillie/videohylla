@@ -2,14 +2,14 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Videohylla</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="m-0">
   <div id="root"></div>
   <div id="error" class="hidden text-red-500 text-center p-4">
     Det gick inte att ladda appen. Kontrollera konsolen för fel.
@@ -24,14 +24,14 @@
       'https://image.tmdb.org/t/p/w342/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg', // Avengers: Endgame
       'https://image.tmdb.org/t/p/w342/3bhkrj58Vtu7enYsRolD1fZdja1.jpg', // Titanic
       'https://image.tmdb.org/t/p/w342/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg', // Jaws
-      'https://image.tmdb.org/t/p/w342/ekZobS8isE6mA53RAiGDG93hBxL.jpg'  // Mad Max: Fury Road (ersätter 9)
+      'https://image.tmdb.org/t/p/w342/ekZobS8isE6mA53RAiGDG93hBxL.jpg'  // Mad Max: Fury Road
     ];
 
     const fallbackImage = 'https://via.placeholder.com/200x300?text=Poster+Missing';
 
     function VideoShelf() {
       return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-gray-100 flex items-start justify-center p-4">
           <div className="grid grid-cols-3 gap-4 max-w-md w-full">
             {images.map((src, index) => (
               <div key={index} className="aspect-w-2 aspect-h-3">
