@@ -1,50 +1,64 @@
-<meta http-equiv="cache-control" content="no-cache">
-<meta http-equiv="expires" content="0">
-<meta http-equiv="pragma" content="no-cache">
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Videohylla</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="m-0">
+  <div id="root"></div>
+  <div id="error" class="hidden text-red-500 text-center p-4">
+    Det gick inte att ladda appen. Kontrollera konsolen för fel.
+  </div>
+  <script type="text/babel">
+    console.log('Börjar rendera Videohylla...');
 
-<script type="text/babel">
-  console.log('Börjar rendera Videohylla...');
-  
-  const images = [
-    'https://image.tmdb.org/t/p/w342/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg', // Spider-Man: No Way Home
-    'https://images.metahub.space/poster/small/tt20969586/img', // Ny bild
-    'https://image.tmdb.org/t/p/w342/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg', // Star Wars: Episode IV
-    'https://image.tmdb.org/t/p/w342/3bhkrj58Vtu7enYsRolD1fZdja1.jpg'  // Titanic
-  ];
+    const images = [
+      'https://image.tmdb.org/t/p/w342/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg', // Spider-Man: No Way Home
+      'https://image.tmdb.org/t/p/w342/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg', // Pulp Fiction
+      'https://image.tmdb.org/t/p/w342/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg', // Star Wars: Episode IV
+      'https://image.tmdb.org/t/p/w342/3bhkrj58Vtu7enYsRolD1fZdja1.jpg'  // Titanic
+    ];
 
-  const fallbackImage = 'https://via.placeholder.com/200x300?text=Poster+Missing';
+    const fallbackImage = 'https://via.placeholder.com/200x300?text=Poster+Missing';
 
-  function VideoShelf() {
-    console.log('Rendering VideoShelf-komponent...');
-    return (
-      <div className="bg-gray-100 flex items-start justify-center p-4">
-        <div className="grid grid-cols-2 gap-4 max-w-md w-full">
-          {images.map((src, index) => (
-            <div key={index} className="aspect-w-2 aspect-h-3">
-              <img
-                src={src}
-                alt={`Poster ${index + 1}`}
-                className="w-full h-full object-cover rounded-lg shadow-md"
-                onError={(e) => {
-                  console.log(`Fel vid laddning av bild ${index + 1}: ${src}`);
-                  e.target.src = fallbackImage;
-                }}
-                onLoad={() => console.log(`Bild ${index + 1} laddades: ${src}`)}
-              />
-            </div>
-          ))}
+    function VideoShelf() {
+      console.log('Rendering VideoShelf-komponent...');
+      return (
+        <div className="bg-gray-100 flex items-start justify-center p-4">
+          <div className="grid grid-cols-2 gap-4 max-w-md w-full">
+            {images.map((src, index) => (
+              <div key={index} className="aspect-w-2 aspect-h-3">
+                <img
+                  src={src}
+                  alt={`Poster ${index + 1}`}
+                  className="w-full h-full object-cover rounded-lg shadow-md"
+                  onError={(e) => {
+                    console.log(`Fel vid laddning av bild ${index + 1}: ${src}`);
+                    e.target.src = fallbackImage;
+                  }}
+                  onLoad={() => console.log(`Bild ${index + 1} laddades: ${src}`)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  try {
-    console.log('Försöker skapa React-root...');
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    console.log('Renderar VideoShelf...');
-    root.render(<VideoShelf />);
-  } catch (e) {
-    console.error('Fel vid rendering:', e);
-    document.getElementById('error').classList.remove('hidden');
-  }
-</script>
+    try {
+      console.log('Försöker skapa React-root...');
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      console.log('Renderar VideoShelf...');
+      root.render(<VideoShelf />);
+    } catch (e) {
+      console.error('Fel vid rendering:', e);
+      document.getElementById('error').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
